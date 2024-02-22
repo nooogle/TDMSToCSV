@@ -37,7 +37,7 @@ namespace TDMSToCSV
             var fullPath = @"C:\Users\jon\Dropbox\CustomerLines\CLTUV001\Profiler puck data files\2023-04-24\Bottom\20232404_1_bottom.tdms";
 
             var fileNamePart = Path.GetFileNameWithoutExtension(fullPath);
-            var uvaChannel = UVAChannelBuilder.Build(fullPath);
+            (var uvaChannel, var _) = UVAChannelBuilder.Build(fullPath);
 
             new DataAnalyser1().Go(uvaChannel);
         }

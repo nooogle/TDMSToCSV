@@ -6,13 +6,15 @@ namespace TDMSToCSV
 {
     public static class UVAChannelBuilder
     {
-        public static UVAChannel Build(string path)
+        public static (UVAChannel, IDictionary<string, object>) Build(string path)
         {
             UVAChannel uvaChannel;
+            IDictionary<string, object> properties;
 
             using (var tdmsFile = new NationalInstruments.Tdms.File(path))
             {
                 tdmsFile.Open();
+                properties = tdmsFile.Properties;
 
                 var group = tdmsFile.Groups["UV Signals"];
                 var channel = group.Channels["UVA"];
@@ -37,7 +39,7 @@ namespace TDMSToCSV
                     samples: samples.ToImmutableArray());
             }
 
-            return uvaChannel;
+            return (uvaChannel, properties);
         }
     }
 }

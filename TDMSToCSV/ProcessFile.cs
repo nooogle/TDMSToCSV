@@ -1,4 +1,7 @@
-﻿namespace TDMSToCSV
+﻿
+using System.Text;
+
+namespace TDMSToCSV
 {
     static class ProcessFile
     {
@@ -22,12 +25,26 @@
             var subSampledCSVFileName = Path.Combine(outDir, "Sub-sampled.csv");
             var summaryCSVFileName = Path.Combine(outDir, "Summary.csv");
 
-            var uvaChannel = UVAChannelBuilder.Build(tdmsFileName);
+            (var uvaChannel, var properties) = UVAChannelBuilder.Build(tdmsFileName);
             UVAChannelToCSV.Export(uvaChannel, UVAChannelExportMode.Raw, rawCSVFileName);
             UVAChannelToCSV.Export(uvaChannel, UVAChannelExportMode.NSamplesPerSecond, subSampledCSVFileName);
             UVAChannelToCSV.Export(uvaChannel, UVAChannelExportMode.Summary, summaryCSVFileName);
+            AppendPropertiesToCSV(properties, summaryCSVFileName);
 
             Console.WriteLine($"Files exported to {outDir}\n");
+        }
+
+        private static void AppendPropertiesToCSV(IDictionary<string, object> properties, string summaryCSVFileName)
+        {
+            var csv = new StringBuilder();
+            csv.AppendLine($"");
+
+            foreach ( var property in properties )
+            {
+                csv.AppendLine($"{property.Key}, {property.Value}");                
+            }
+
+            File.AppendAllText(summaryCSVFileName, csv.ToString());
         }
     }
 }
